@@ -1,0 +1,33 @@
+version: '3'
+services:
+  graph-med-mcp:
+    image: poisunk/gomodd:v1.23
+    container_name: graph-med-mcp
+    environment:
+      # 时区上海 - Timezone Shanghai
+      TZ: Asia/Shanghai
+      GOPROXY: https://goproxy.cn,direct
+    working_dir: /go/app
+    volumes:
+      - .:/go/app
+    privileged: true
+    restart: always
+    networks:
+      - graph_med_net
+
+  neo4j:
+    image: neo4j
+    container_name: neo4j
+    ports:
+      - 7687:7687
+      - 7474:7474
+    environment:
+      NEO4J_AUTH: neo4j/password
+    volumes:
+      - ./data/neo4j/data:/data
+      - ./data/neo4j/logs:/logs
+    command: "neo4j start"
+    privileged: true
+    restart: always
+    networks:
+      - graph_med_net
